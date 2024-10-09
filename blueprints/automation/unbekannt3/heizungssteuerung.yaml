@@ -3,7 +3,7 @@ blueprint:
   description: >
     Automatische Thermostatregelung mit Zeitplan, Presence Detection und
     optionaler Fensterkontrolle
-  source_url: https://github.com/unbekannt3/homeassistant/blob/main/blueprints/automation/unbekannt3/heizungssteuerung_multifenster.yaml
+  source_url: https://github.com/unbekannt3/homeassistant/blob/main/blueprints/automation/unbekannt3/heizungssteuerung.yaml
   domain: automation
   input:
     heating:
