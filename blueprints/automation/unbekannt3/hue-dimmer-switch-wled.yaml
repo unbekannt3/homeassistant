@@ -1,6 +1,7 @@
 blueprint:
   name: Philips Hue Dimmer Switch for WLED
   description: Steuert eine WLED-Entität und schaltet durch Presets mit einem Philips Hue Dimmer Switch.
+  source_url: https://github.com/unbekannt3/homeassistant/blob/main/blueprints/automation/unbekannt3/hue-dimmer-switch-wled.yaml
   domain: automation
   input:
     remote_device:
