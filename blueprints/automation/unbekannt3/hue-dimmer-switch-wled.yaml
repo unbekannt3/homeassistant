@@ -1,0 +1,113 @@
+blueprint:
+  name: Philips Hue Dimmer Switch for WLED
+  description: Steuert eine WLED-Entität und schaltet durch Presets mit einem Philips Hue Dimmer Switch.
+  domain: automation
+  input:
+    remote_device:
+      name: Philips Hue Dimmer Switch
+      description: Der Dimmer Switch, der die Automatisierung auslöst.
+      selector:
+        device:
+          integration: mqtt
+          manufacturer: Philips
+          model: RWL021
+    light_entity:
+      name: Licht Entität
+      description: Die Licht-Entität (z. B. eine WLED-Lichtgruppe), die gesteuert werden soll.
+      selector:
+        entity:
+          domain: light
+    preset_select_entity:
+      name: WLED Preset Select
+      description: Die 'select' Entität (z. B. select.wled_wohnzimmer_lowboard_voreinstellung) zum Ändern der Presets.
+      selector:
+        entity:
+          domain: select
+    next_preset_string_sensor:
+      name: Nächster Preset String Sensor
+      description: Der Sensor, der den Namen des nächsten Presets enthält (z. B. sensor.wled_wohnzimmer_lowboard_nachste_vorlage_string).
+      selector:
+        entity:
+          domain: sensor
+    next_preset_index_sensor:
+      name: Nächster Preset Index Sensor
+      description: Der Sensor, der den Index des nächsten Presets enthält (z. B. sensor.wled_wohnzimmer_lowboard_nachste_vorlage_index).
+      selector:
+        entity:
+          domain: sensor
+    preset_value_input_number:
+      name: Preset Value Input Number
+      description: Der Input Number Helper (z. B. input_number.sofa_dimmingswitch_presetvalue) zum Speichern des Preset-Werts.
+      selector:
+        entity:
+          domain: input_number
+
+mode: single
+
+trigger:
+  - platform: device
+    device_id: !input remote_device
+    domain: mqtt
+    type: action
+    subtype: on_press
+    id: 'on'
+  - platform: device
+    device_id: !input remote_device
+    domain: mqtt
+    type: action
+    subtype: off_press
+    id: 'off'
+  - platform: device
+    device_id: !input remote_device
+    domain: mqtt
+    type: action
+    subtype: up_press
+    id: 'up'
+  - platform: device
+    device_id: !input remote_device
+    domain: mqtt
+    type: action
+    subtype: down_press
+    id: 'down'
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: 'on'
+        sequence:
+          - service: light.toggle
+            target:
+              entity_id: !input light_entity
+      - conditions:
+          - condition: trigger
+            id: 'off'
+        sequence:
+          - service: select.select_option
+            data:
+              option: "{{ states(!input next_preset_string_sensor) }}"
+            target:
+              entity_id: !input preset_select_entity
+          - service: input_number.set_value
+            data:
+              value: "{{ states(!input next_preset_index_sensor) | int(0) }}"
+            target:
+              entity_id: !input preset_value_input_number
+      - conditions:
+          - condition: trigger
+            id: 'up'
+        sequence:
+          - service: light.turn_on
+            data:
+              brightness_step_pct: 10
+            target:
+              entity_id: !input light_entity
+      - conditions:
+          - condition: trigger
+            id: 'down'
+        sequence:
+          - service: light.turn_on
+            data:
+              brightness_step_pct: -10
+            target:
+              entity_id: !input light_entity
