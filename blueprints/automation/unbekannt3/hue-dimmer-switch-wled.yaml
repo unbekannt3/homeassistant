@@ -11,8 +11,6 @@ blueprint:
         device:
           integration: mqtt
           manufacturer: Philips
-          model:
-            - 'Hue dimmer switch'
     light_entity:
       name: Licht Entität
       description: Die Licht-Entität (z. B. eine WLED-Lichtgruppe), die gesteuert werden soll.
