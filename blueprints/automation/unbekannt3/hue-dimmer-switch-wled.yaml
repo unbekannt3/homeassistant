@@ -11,7 +11,10 @@ blueprint:
         device:
           integration: mqtt
           manufacturer: Philips
-          model: RWL021
+          model:
+            - RWL020
+            - RWL021
+            - RWL022
     light_entity:
       name: Licht Entität
       description: Die Licht-Entität (z. B. eine WLED-Lichtgruppe), die gesteuert werden soll.
